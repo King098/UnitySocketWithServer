@@ -1,0 +1,14 @@
+message TestData {  
+    required int32 ID=1;  
+    required string UserName=2;  
+    required string UserName2=3;  
+    required string UserName3=4;  
+    required string UserName4=5;  
+    required string UserName5=6;  
+    required float value=7;  
+}  
+  
+message TestDataTable  
+{  
+  repeated TestData data=1;  
+}  

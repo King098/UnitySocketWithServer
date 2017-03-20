@@ -1,0 +1,237 @@
+enum CmdEnum
+{
+    //客户端心跳请求
+	Req_Alive = 100000;
+	//客户端注册请求
+	Req_Register = 100001;
+    //客户端登录请求
+	Req_Login = 100002;
+    //客户端创建房间请求
+    Req_CreateRoom = 100003;
+    //客户端请求房间列表
+    Req_GetRooms = 100004;
+    //客户端删除房钱请求
+    Req_DeleteRoom = 100005;
+
+
+    //服务器心跳回复
+    Res_Alive = 200000;
+    //服务器返回注册
+    Res_Register = 200001;
+    //服务器登录回复
+    Res_Login = 200002;
+    //服务器返回创建房间消息
+    Res_CreateRoom = 200003;
+    //服务器返回房间列表
+    Res_GetRooms = 200004;
+    //服务器删除房间返回
+    Res_DeleteRoom = 200005;
+}
+
+//客户端发送的心跳消息
+message RequestAlive
+{
+	//协议号100000
+	required int32 proto=1;
+}
+
+//服务器返回心跳记录
+message ResponseAlive
+{
+	//协议号200000
+	required int32 proto=1;
+}
+
+//一个定义的封装消息体
+//玩家信息
+message PlayerInfo
+{
+	//玩家ID
+	required string id=1;
+	//玩家账号
+	required string account=2;
+	//玩家用户名
+	required string username=3;
+	//玩家密码
+	required string passwrod=4;
+}
+
+//客户端注册用户请求
+message RequestRegister
+{
+	//协议号100001
+	required int32 proto=1;
+	//玩家账号
+	required string account=2;
+	//用户名
+	required string username=3;
+	//密码
+	required string password=4;
+}
+
+//服务端返回注册用户信息
+message ResponseRegister
+{
+	//协议号200001
+	required int32 proto=1;
+	//错误信息
+	optional string error=2;
+	//用户信息
+	optional PlayerInfo player_info=3;
+}
+
+//客户端请求登录的消息
+message RequestLogin 
+{  
+	//协议号100002
+	required int32 proto=1;  
+	//账号
+	required string account=2;  
+	//密码
+	required string password=3;   
+}
+
+//服务器返回登录消息回复
+message ResponseLogin
+{
+	//协议号200002
+	required int32 proto=1;
+	//返回错误信息
+	optional string error=2;
+	//返回登录消息结果
+	optional string result=3;
+	//玩家信息
+	required PlayerInfo player=4;
+}
+
+//一个定义的封装消息体
+//游戏创建的房间信息
+message GameRoomInfo
+{
+	//房间号
+	required string room_id=1;
+	//房间名称
+	required string room_name=2;
+	//房间密码
+	optional string password=3;
+	//房间人数上限
+	optional int32 player_number=4;
+	//是否允许旁观
+	optional bool can_watch=5;
+	//当前房间主人
+	required string player_id=6;
+}
+
+//客户端请求创建一个新房间
+message RequestCreateRoom
+{
+	//协议号100003
+	required int32 proto=1;
+	//房间名字
+	required string room_name=2;
+	//房间密码
+	required string password=3;
+	//是否允许旁观
+	required bool can_watch=4;
+	//房间总人数上限
+	required int32 player_number=5;
+	//创建房间的玩家ID
+	required string player_id=6;
+}
+
+//服务器端返回客户端创建的房间信息
+message ResponseCreateRoom
+{
+	//协议号200003
+	required int32 proto=1;
+	//返回错误信息
+	optional string error=2;
+	//返回当前创建成功的房间信息
+	optional GameRoomInfo room=3;
+}
+
+//客户端请求房间列表的消息
+message RequestGetRooms
+{
+	//协议号100004
+	required int32 proto=1;
+}
+
+//服务器返回所有房间信息
+message ResponseGetRooms
+{
+	//协议号200004
+	required int32 proto=1;
+	//所有的房间信息
+	repeated GameRoomInfo rooms=2;
+}
+
+//客户端主动删除一个房间信息
+message RequestDeleteRoom
+{
+	//协议号100005
+	required int32 proto=1;
+	//房间号
+	required int32 room_id=2;
+	//请求消息的玩家ID
+	required string player_id=3;
+}
+
+//服务器返回删除房间是否成功
+message ResponseDeleteRoom
+{
+	//协议号200005
+	required int32 proto=1;
+	//删除错误的信息
+	optional string error=2;
+}
+
+//客户端请求进入一个房间
+message RequestJoinRoom
+{
+	//协议号100006
+	required int32 proto=1;
+	//请求进入玩家ID
+	required string player_id=2;
+	//请求进入的房间ID
+	required int32 room_id=3;
+	//房间密码
+	required string password=4;
+	//是否是旁观
+	required bool is_watch=5;
+}
+
+//服务器返回进入房间结果
+message ResponseJoinRoom
+{
+	//协议号200006
+	required int32 proto=1;
+	//错误消息
+	required string error=2;
+	//当前的房间基础信息
+	required GameRoomInfo room=3;
+	//当前房间参与游戏的玩家
+	required string players=4;
+	//旁观的玩家列表
+	required string watch_players=5;
+}
+
+//客户端请求离开一个房间的消息
+message RequestExitRoom
+{
+	//协议号100007
+	required int32 proto=1;
+	//退出房间玩家ID
+	required string player_id=2;
+	//要离开的房间ID
+	required int32 room_id=3;
+}
+
+//服务器返回退出房间消息
+message ResponseExitRoom
+{
+	//协议号200007
+	required int32 proto=1;
+	//错误消息
+	required string error=2;
+}
